@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Paths
+MAG_DIR=/ibiscostorage/fmigliaccio/fmontemagno/mags_analysis/all_mags
+OUT_DIR=/ibiscostorage/fmigliaccio/fmontemagno/mags_analysis/output/dram
+CONFIG_DIR=/ibiscostorage/GiovannelliLab/db/geomosaic_extdb/mags_dram_extdb
+CHECKM_FILE=${MAG_DIR}/MAGs.tsv
+THREADS=12
+
+mkdir -p ${OUT_DIR}
+
+echo "Running DRAM annotate"
+DRAM.py annotate \
+  --input_fasta "${MAG_DIR}/*.fa" \
+  --output_dir ${OUT_DIR} \
+  --threads ${THREADS} \
+  --config_loc ${CONFIG_DIR}/dram_config.json \
+  --checkm_quality ${CHECKM_FILE} \
+  --skip_trnascan
+
+echo "Running DRAM distill"
+DRAM.py distill \
+  --input_file ${OUT_DIR}/annotations.tsv \
+  --output_dir ${OUT_DIR}/dram_distillation \
+  --config_loc ${CONFIG_DIR}/dram_config.json
